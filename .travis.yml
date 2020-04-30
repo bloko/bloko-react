@@ -1,0 +1,9 @@
+language: node_js
+node_js: lts/*
+cache: npm
+install:
+  - npm install
+script:
+  - npm run test
+after_success:
+  - bash <(curl -s https://codecov.io/bash) -e TRAVIS_NODE_VERSION

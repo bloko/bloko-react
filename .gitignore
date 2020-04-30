@@ -1,0 +1,8 @@
+.DS_Store
+dist
+node_modules
+.size-snapshot.json
+*.tgz
+coverage
+/examples
+/http-mock.js
