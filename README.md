@@ -22,13 +22,13 @@
 Bloko is currently under heavy development, but can be installed by running either of these commands:
 
 ```sh
-npm install --save @bloko/react @bloko/js
+npm install --save @bloko/react
 ```
 
 or
 
 ```sh
-yarn add @bloko/react @bloko/js
+yarn add @bloko/react
 ```
 
 more later...
