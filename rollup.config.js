@@ -1,7 +1,7 @@
+import babel from '@rollup/plugin-babel';
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
-import babel from 'rollup-plugin-babel';
 import { sizeSnapshot } from 'rollup-plugin-size-snapshot';
 import { terser } from 'rollup-plugin-terser';
 
@@ -13,11 +13,22 @@ export default [
       format: 'cjs',
       exports: 'named',
     },
-    external: ['react', '@bloko/js'],
+    external: ['react', 'axios', '@babel/runtime'],
     plugins: [
+      replace({
+        delimiters: ['', ''],
+        values: {
+          '@bloko/js': '@bloko/js/dist',
+        },
+      }),
       resolve(),
-      babel(),
-      commonjs(),
+      commonjs({
+        exclude: 'src/**',
+      }),
+      babel({
+        exclude: 'node_modules/**',
+        babelHelpers: 'runtime',
+      }),
       replace({ 'process.env.NODE_ENV': JSON.stringify('development') }),
       sizeSnapshot(),
     ],
@@ -30,11 +41,22 @@ export default [
       exports: 'named',
       indent: false,
     },
-    external: ['react', '@bloko/js'],
+    external: ['react', 'axios', '@babel/runtime'],
     plugins: [
+      replace({
+        delimiters: ['', ''],
+        values: {
+          '@bloko/js': '@bloko/js/dist/index.min',
+        },
+      }),
       resolve(),
-      babel(),
-      commonjs(),
+      commonjs({
+        exclude: 'src/**',
+      }),
+      babel({
+        exclude: 'node_modules/**',
+        babelHelpers: 'runtime',
+      }),
       replace({ 'process.env.NODE_ENV': JSON.stringify('production') }),
       terser(),
       sizeSnapshot(),
