@@ -1,6 +1,12 @@
-import { Model, http } from '@bloko/js';
+import Bloko, { http } from '@bloko/js';
 import BlokoProvider from './BlokoProvider';
 import useBloko from './useBloko';
+import useBlokoStore from './useBlokoStore';
 
-export { useBloko, Model, http };
-export default { Model, Provider: BlokoProvider };
+export default {
+  create: Bloko.create,
+  createStore: Bloko.createStore,
+  Provider: BlokoProvider,
+};
+
+export { http, useBloko, useBlokoStore };

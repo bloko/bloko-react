@@ -5,5 +5,9 @@ install:
   - npm install
 script:
   - npm run test
+branches:
+  only:
+    - master
+    - beta
 after_success:
   - bash <(curl -s https://codecov.io/bash) -e TRAVIS_NODE_VERSION

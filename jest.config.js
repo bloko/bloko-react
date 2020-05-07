@@ -22,6 +22,7 @@ module.exports = {
     '<rootDir>/src/**/*.js',
     '!src/**/index.js',
     '!src/utils/context.js',
+    '!src/utils/isPromise.js',
     '!src/test-utils/**',
     '!type/**/*.d.ts',
     '!**/node_modules/**',

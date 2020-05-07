@@ -1,69 +1,34 @@
-import { getBloko } from '@bloko/js';
-import useBlokoContext from './useBlokoContext';
+import { useState } from 'react';
+import isFunction from './utils/isFunction';
 
-function useState(namespace) {
-  const { state } = useBlokoContext();
+function useBloko(Bloko) {
+  const [bloko, setBloko] = useState(() => Bloko());
 
-  return state[namespace];
-}
+  function update(path, value) {
+    const splits = path.split('.');
+    let refKey = splits.pop();
+    let ref = bloko;
 
-function useActions(namespace) {
-  const { state, dispatch } = useBlokoContext();
-  const commit = createCommit(dispatch, namespace);
-  const { actions } = getBloko(namespace);
-  const namespacedState = state[namespace];
-  const actionNames = Object.keys(actions);
-  const context = { state, commit };
+    for (let i = 0; i < splits.length; i += 1) {
+      const split = splits[i];
 
-  const syncActions = Object.keys(namespacedState).reduce((acc, name) => {
-    const mustSkip = actionNames.indexOf(name) > -1 || /^isloading/i.test(name);
-
-    if (mustSkip) {
-      return acc;
+      ref = ref[split];
     }
 
-    const capitalizedName = name.charAt(0).toUpperCase() + name.slice(1);
+    let _value = value;
 
-    acc[`set${capitalizedName}`] = payload => commit({ [name]: payload });
+    if (isFunction(value)) {
+      _value = value(ref[refKey]);
+    }
 
-    return acc;
-  }, {});
+    // Update bloko value
+    ref[refKey] = _value;
 
-  const asyncActions = Object.keys(actions).reduce((acc, actionName) => {
-    const action = actions[actionName];
+    // create a new copy to React reactivity
+    setBloko(Object.assign({}, bloko));
+  }
 
-    acc[actionName] = (payload, repositoryOptions) => {
-      return action(context, payload, repositoryOptions);
-    };
-
-    return acc;
-  }, {});
-
-  return {
-    ...syncActions,
-    ...asyncActions,
-  };
-}
-
-function createCommit(dispatch, namespace) {
-  return function (payload) {
-    Object.keys(payload).forEach(name => {
-      dispatch({
-        type: name,
-        meta: {
-          namespace,
-          payload: payload[name],
-        },
-      });
-    });
-  };
-}
-
-function useBloko(namespace) {
-  const state = useState(namespace);
-  const actions = useActions(namespace);
-
-  return [state, actions];
+  return [bloko, update];
 }
 
 export default useBloko;
