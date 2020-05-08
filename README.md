@@ -1,12 +1,15 @@
-<a href="https://bloko.dev">
-  <img
-    height="80"
-    alt="bloko-logo"
-    src="https://user-images.githubusercontent.com/7120471/80561131-d98be300-89b9-11ea-9956-679a406a387e.png"
-  />
-</a>
-
-#
+<p align="center">
+  <a href="https://bloko.dev">
+  <br />
+  <img src="https://user-images.githubusercontent.com/7120471/80561131-d98be300-89b9-11ea-9956-679a406a387e.png" alt="Logo Bloko" height="60"/>
+  <br />
+    <sub><strong>Build modular applications with JavaScript</strong></sub>
+  <br />
+  <br />
+  <br />
+  <br />
+  </a>
+</p>
 
 [![Travis build][travis-image]][travis-url]
 [![Codecov coverage][codecov-image]][codecov-url]
@@ -19,18 +22,174 @@
 [npm-url]: https://npmjs.com/package/@bloko/react
 [npm-image]: https://img.shields.io/npm/v/@bloko/react.svg
 
-Bloko is currently under heavy development, but can be installed by running either of these commands:
+Bloko is currently under heavy development, but can be installed by running:
 
 ```sh
 npm install --save @bloko/react
 ```
 
-or
+## Quick example
 
-```sh
-yarn add @bloko/react
+```js
+import React, { useState } from 'react'
+import Bloko, { useBlokoStore } from '@bloko/react';
+
+const User = Bloko.create({
+  name: '',
+});
+
+const Store = Bloko.createStore({
+  key: 'store',
+  state: {
+    user: {
+      type: User,
+      setter: true
+    },
+  },
+  actions: {},
+});
+
+function App() {
+  const [state, actions] = useBlokoStore(Store);
+  const [name, setName] = useState('');
+
+  function saveName() {
+    actions.setUser({ name });
+  }
+
+  return (
+    <div>
+      <input value={name} onChange={e => setName(e.target.value)} />
+      <button onClick={saveName}>
+        Save
+      </button>
+      <div>
+        User store name: {state.user.name}
+      </div>
+    </div>
+  )
+}
 ```
 
-more later...
+## Bloko Provider
 
-> It's in alpha, so read the source to get started or see the tests! You can also ask me a question [on Twitter](https://twitter.com/matiosfm).
+To give [`@bloko/js`](https://github.com/bloko/bloko-js) the necessary context to work properly `Bloko.Provider` will have to be used on root app React component.
+
+`Bloko.Provider` is a React Component and needs an array of [Bloko Store](https://github.com/bloko/bloko-js#store-bloko).
+
+```js
+// React entry file
+import React from 'react';
+import ReactDOM from 'react-dom';
+import Bloko from '@bloko/react';
+import App from './App';
+import Auth from './blokos/Auth';
+import Users from './blokos/Users';
+
+const blokos = [Auth, Users]
+
+ReactDOM.render(
+  <Bloko.Provider blokos={blokos}>
+    <App />
+  </Bloko.Provider>,
+  document.getElementById('root')
+);
+```
+
+## API
+
+### `useBloko(bloko)`
+
+A [React hook](https://reactjs.org/hooks) that helps handle Bloko units.
+
+**Arguments**
+
+* `bloko` - a [Bloko Unit](https://github.com/bloko/bloko-js#unit-blokos) instance
+
+**Returns** a tuple of `[state, update]`:
+
+- `state` - Represents the current state of the Bloko Unit
+- `update(path: string, value: any)` - A function to ease updates on Bloko Unit using deep path string
+
+**Example**
+
+```js
+import React from 'react';
+import Bloko, { useBloko } from '@bloko/react';
+
+const Child = Bloko.create({
+  name: '',
+});
+
+const Parent = Bloko.create({
+  name: '',
+  child: Child,
+});
+
+function App() {
+  const [parent, setParent] = useBloko(Parent);
+  // => parent { name: '', child: { name: '' } }
+
+  setParent('name', 'Parent');
+  // => parent { name: 'Parent', child: { name: '' } }
+
+  setParent('child.name', 'Child');
+  // => parent { name: 'Parent', child: { name: 'Child' } }
+}
+```
+
+### `useBlokoStore(blokoStore)`
+
+A [React hook](https://reactjs.org/hooks) that subscribes to state changes from an existing Bloko Store and also provide its actions to allow user interactions.
+
+**Arguments**
+
+* `blokoStore` - a [Bloko Store](https://github.com/bloko/bloko-js#store-bloko) instance
+
+**Returns** a tuple of `[state, actions]`:
+
+- `state` - Represents the current state of the Bloko Store. It is a partial representation of global state.
+- `actions` - A collection of Bloko Store functions to interact with global state.
+
+**Example**
+
+```js
+import React from 'react'
+import Bloko, { useBlokoStore } from '@bloko/react';
+
+const User = Bloko.create({
+  name: '',
+});
+
+const Store = Bloko.createStore({
+  key: 'store',
+  state: {
+    user: {
+      type: User,
+      setter: true
+    },
+  },
+  actions: {
+    getUserName: {
+      // Simulate an async request with data.name
+      repository: () => Promise.resolve({
+        data: { name: 'John' },
+      }),
+      resolved(data) {
+        return {
+          user: {
+            name: data.name
+          }
+        }
+      }
+    }
+  },
+});
+
+function App() {
+  const [state, actions] = useBlokoStore(Store);
+
+  // => state { user: { name: '' } }
+  // => actions { setUser(), getUserName() }
+}
+```
