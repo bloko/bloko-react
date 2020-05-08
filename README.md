@@ -75,7 +75,7 @@ function App() {
 
 To give [`@bloko/js`](https://github.com/bloko/bloko-js) the necessary context to work properly `Bloko.Provider` will have to be used on root app React component.
 
-`Bloko.Provider` is a React Component and needs an array of [Bloko Store](https://github.com/bloko/bloko-js#store-bloko).
+`Bloko.Provider` is a React Component and needs an array of [Bloko Store](https://github.com/bloko/bloko-js#blokos-store).
 
 ```js
 // React entry file
@@ -104,7 +104,7 @@ A [React hook](https://reactjs.org/hooks) that helps handle Bloko units.
 
 **Arguments**
 
-* `bloko` - a [Bloko Unit](https://github.com/bloko/bloko-js#unit-blokos) instance
+* `bloko` - a [Bloko Unit](https://github.com/bloko/bloko-js#blokos-unit) instance
 
 **Returns** a tuple of `[state, update]`:
 
@@ -144,7 +144,7 @@ A [React hook](https://reactjs.org/hooks) that subscribes to state changes from 
 
 **Arguments**
 
-* `blokoStore` - a [Bloko Store](https://github.com/bloko/bloko-js#store-bloko) instance
+* `blokoStore` - a [Bloko Store](https://github.com/bloko/bloko-js#blokos-store) instance
 
 **Returns** a tuple of `[state, actions]`:
 
