@@ -4,20 +4,18 @@ module.exports = {
   globals: {
     Map: true,
     Promise: true,
+    BigInt: true,
   },
 
   parser: 'babel-eslint',
 
   env: {
     node: true,
-    jest: true
+    jest: true,
+    es6: true,
   },
 
-  extends: [
-    'prettier',
-    "eslint:recommended",
-    "plugin:react/recommended"
-  ],
+  extends: ['prettier', 'eslint:recommended', 'plugin:react/recommended'],
 
   plugins: ['prettier', 'eslint-plugin-import-helpers'],
 
@@ -47,7 +45,7 @@ module.exports = {
           'do',
           'while',
           'switch',
-          'return'
+          'return',
         ],
         next: '*',
       },
