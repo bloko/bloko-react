@@ -1,5 +1,5 @@
 module.exports = {
-	yarn: false,
+  yarn: false,
   cleanup: false,
   releaseDraft: false,
   contents: '.',
