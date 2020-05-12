@@ -74,6 +74,65 @@ describe('useBlokoStore', () => {
     getByText(getActionsText(dispatchExpected));
   });
 
+  it('should render correct interface for state arrays and actions', async () => {
+    const buttonText = 'Submit';
+
+    const AuthArray = Bloko.createStore({
+      key: storeKey,
+      state: {
+        [stateUser]: User.Array,
+      },
+      actions: {
+        [asyncAction]: {
+          repository(v) {
+            return Promise.resolve(v);
+          },
+          resolved(data) {
+            return {
+              [stateUser]: data,
+            };
+          },
+        },
+      },
+    });
+
+    function Tree() {
+      const [loading, setLoading] = React.useState(false);
+      const [state, actions] = useBlokoStore(AuthArray);
+
+      async function onClick() {
+        const arrayUser = [User(), User()];
+
+        setLoading(true);
+
+        await actions[asyncAction](arrayUser);
+
+        setLoading(false);
+      }
+
+      return (
+        <React.Fragment>
+          {loading ? null : <div>{getStateText(state)}</div>}
+          <button onClick={onClick}>{buttonText}</button>
+        </React.Fragment>
+      );
+    }
+
+    const { getByText, findByText } = renderWithBloko(<Tree />, {
+      blokos: [AuthArray],
+    });
+
+    const stateExpected = {
+      [stateUser]: [User(), User()],
+    };
+
+    await act(async () => {
+      await userEvent.click(getByText(buttonText));
+
+      await findByText(getStateText(stateExpected));
+    });
+  });
+
   it('should update state with set actions', async () => {
     const expectedModelName = 'expectedFooName';
     const buttonText = 'Submit';
@@ -186,7 +245,7 @@ describe('useBlokoStore', () => {
       const [state, actions] = useBlokoStore(Auth);
 
       function onClickUndefined() {
-        // trying to update partial object state with undefined value
+        // trying to update partial object state with undefined value. Reset to initial state
         actions[setterUserName]();
       }
 
