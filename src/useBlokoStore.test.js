@@ -63,6 +63,10 @@ describe('useBlokoStore', () => {
       user: {
         name: '',
       },
+      [asyncAction]: {
+        loading: false,
+        error: '',
+      },
     };
 
     const dispatchExpected = {
@@ -124,6 +128,10 @@ describe('useBlokoStore', () => {
 
     const stateExpected = {
       [stateUser]: [User(), User()],
+      [asyncAction]: {
+        loading: false,
+        error: '',
+      },
     };
 
     await act(async () => {
