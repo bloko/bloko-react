@@ -30,7 +30,7 @@ npm install --save @bloko/react
 ## Quick example
 
 ```js
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import Bloko, { useBlokoStore } from '@bloko/react';
 
 const User = Bloko.create({
@@ -42,7 +42,7 @@ const Store = Bloko.createStore({
   state: {
     user: {
       type: User,
-      setter: true
+      setter: true,
     },
   },
   actions: {},
@@ -59,14 +59,10 @@ function App() {
   return (
     <div>
       <input value={name} onChange={e => setName(e.target.value)} />
-      <button onClick={saveName}>
-        Save
-      </button>
-      <div>
-        User store name: {state.user.name}
-      </div>
+      <button onClick={saveName}>Save</button>
+      <div>User store name: {state.user.name}</div>
     </div>
-  )
+  );
 }
 ```
 
@@ -85,7 +81,7 @@ import App from './App';
 import Auth from './blokos/Auth';
 import Users from './blokos/Users';
 
-const blokos = [Auth, Users]
+const blokos = [Auth, Users];
 
 ReactDOM.render(
   <Bloko.Provider blokos={blokos}>
@@ -103,7 +99,7 @@ A [React hook](https://reactjs.org/hooks) that helps handle Bloko units.
 
 **Arguments**
 
-* `bloko` - a [Bloko Unit](https://github.com/bloko/bloko-js#blokos-unit) instance
+- `bloko` - a [Bloko Unit](https://github.com/bloko/bloko-js#blokos-unit) instance
 
 **Returns** a tuple of `[state, update]`:
 
@@ -143,7 +139,7 @@ A [React hook](https://reactjs.org/hooks) that subscribes to state changes from 
 
 **Arguments**
 
-* `blokoStore` - a [Bloko Store](https://github.com/bloko/bloko-js#blokos-store) instance
+- `blokoStore` - a [Bloko Store](https://github.com/bloko/bloko-js#blokos-store) instance
 
 **Returns** a tuple of `[state, actions]`:
 
@@ -153,7 +149,7 @@ A [React hook](https://reactjs.org/hooks) that subscribes to state changes from 
 **Example**
 
 ```js
-import React from 'react'
+import React from 'react';
 import Bloko, { useBlokoStore } from '@bloko/react';
 
 const User = Bloko.create({
@@ -165,30 +161,31 @@ const Store = Bloko.createStore({
   state: {
     user: {
       type: User,
-      setter: true
+      setter: true,
     },
   },
   actions: {
     getUserName: {
       // Simulate an async request with data.name
-      repository: () => Promise.resolve({
-        data: { name: 'John' },
-      }),
+      repository: () =>
+        Promise.resolve({
+          data: { name: 'John' },
+        }),
       resolved(data) {
         return {
           user: {
-            name: data.name
-          }
-        }
-      }
-    }
+            name: data.name,
+          },
+        };
+      },
+    },
   },
 });
 
 function App() {
   const [state, actions] = useBlokoStore(Store);
 
-  // => state { user: { name: '' } }
+  // => state { user: { name: '' }, getUserName: { loading: false, error: '' } }
   // => actions { setUser(), getUserName() }
 }
 ```
