@@ -1,34 +1,28 @@
 import { useState } from 'react';
-import isFunction from './utils/isFunction';
 
 function useBloko(Bloko) {
-  const [bloko, setBloko] = useState(() => Bloko());
+  const [bloko, setBloko] = useState(Bloko);
 
-  function update(path, value) {
-    const splits = path.split('.');
-    let refKey = splits.pop();
-    let ref = bloko;
-
-    for (let i = 0; i < splits.length; i += 1) {
-      const split = splits[i];
-
-      ref = ref[split];
-    }
-
-    let _value = value;
-
-    if (isFunction(value)) {
-      _value = value(ref[refKey]);
-    }
-
-    // Update bloko value
-    ref[refKey] = _value;
-
-    // create a new copy to React reactivity
-    setBloko(Object.assign({}, bloko));
+  function update(updatedBloko) {
+    // create a new shallow clone for React reactivity
+    setBloko(shallowClone(updatedBloko));
   }
 
   return [bloko, update];
+}
+
+function shallowClone(obj) {
+  var clone = Object.create(Object.getPrototypeOf(obj));
+
+  var props = Object.getOwnPropertyNames(obj);
+
+  props.forEach(key => {
+    var desc = Object.getOwnPropertyDescriptor(obj, key);
+
+    Object.defineProperty(clone, key, desc);
+  });
+
+  return clone;
 }
 
 export default useBloko;

@@ -26,7 +26,7 @@ describe('useBloko', () => {
     getByText(defaultNameValue);
   });
 
-  it('should update value with one level path key', async () => {
+  it('should update bloko using setters', async () => {
     const defaultNameValue = 'Name';
 
     const User = Bloko.create({
@@ -37,7 +37,9 @@ describe('useBloko', () => {
       const [user, setUser] = useBloko(User);
 
       React.useEffect(() => {
-        setUser('name', defaultNameValue);
+        user.name = defaultNameValue;
+
+        setUser(user);
       }, []);
 
       return (
@@ -54,7 +56,7 @@ describe('useBloko', () => {
     expect(element).toBeInTheDocument();
   });
 
-  it('should update value with multiple level path key', async () => {
+  it('should update children blokos with setters', async () => {
     const defaultNameValue = 'Name';
 
     const Child = Bloko.create({
@@ -70,7 +72,9 @@ describe('useBloko', () => {
       const [user, setUser] = useBloko(User);
 
       React.useEffect(() => {
-        setUser('child.name', defaultNameValue);
+        user.child.name = defaultNameValue;
+
+        setUser(user);
       }, []);
 
       return (
@@ -83,34 +87,6 @@ describe('useBloko', () => {
     const { findByText } = render(<Tree />);
 
     const element = await findByText(defaultNameValue);
-
-    expect(element).toBeInTheDocument();
-  });
-
-  it('should update value with function payloads', async () => {
-    const defaultNameValue = 'Name';
-
-    const User = Bloko.create({
-      name: defaultNameValue,
-    });
-
-    function Tree() {
-      const [user, setUser] = useBloko(User);
-
-      React.useEffect(() => {
-        setUser('name', name => name + '!');
-      }, []);
-
-      return (
-        <React.Fragment>
-          <div>{user.name}</div>
-        </React.Fragment>
-      );
-    }
-
-    const { findByText } = render(<Tree />);
-
-    const element = await findByText(defaultNameValue + '!');
 
     expect(element).toBeInTheDocument();
   });
