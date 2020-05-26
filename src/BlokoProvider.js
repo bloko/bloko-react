@@ -3,6 +3,9 @@ import { globalState } from '@bloko/js';
 import context from './utils/context';
 import getType from './utils/getType';
 import isObject from './utils/isObject';
+import recursiveUpdate from './utils/recursiveUpdate';
+import tip from './utils/tip';
+import warn from './utils/warn';
 
 const { Provider } = context;
 
@@ -22,24 +25,36 @@ function BlokoProvider({ children, blokos }) {
 
     let nextBlokoState = payload;
 
-    if (payload === null || payload === undefined) {
-      const blokoInitialState = initialState[namespace][blokoName];
+    const payloadType = getType(payload);
+    const initialType = getType(initialState[namespace][blokoName]);
 
-      nextBlokoState = blokoInitialState;
-    } else if (
+    if (payloadType !== initialType) {
+      /* istanbul ignore else */
+      if (process.env.NODE_ENV !== 'production') {
+        warn(
+          `Cannot update ${namespace} store in ${blokoName} state. Missmatch types. ${blokoName} is ${initialType} type and payload is ${payloadType} type.`
+        );
+
+        if (payload === null || payload === undefined) {
+          const capitalizedName =
+            blokoName.charAt(0).toUpperCase() + blokoName.slice(1);
+
+          tip(
+            `Instead of actions.set${capitalizedName}(null) or actions.set${capitalizedName}(undefined), use actions.reset${capitalizedName}()`
+          );
+        }
+      }
+
+      return state;
+    }
+
+    if (
       isObject(partialState && partialState[blokoName]) &&
       isObject(payload)
     ) {
-      nextBlokoState = { ...partialState[blokoName], ...payload };
-    } else {
-      const payloadType = getType(payload);
-      const initialType = getType(initialState[namespace][blokoName]);
+      nextBlokoState = Object.assign({}, partialState[blokoName]);
 
-      if (payloadType !== initialType) {
-        // TODO: warn user on miss match types
-
-        return state;
-      }
+      recursiveUpdate(payload, nextBlokoState);
     }
 
     const nextState = {

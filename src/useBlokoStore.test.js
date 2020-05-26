@@ -6,24 +6,26 @@ import { getStateText, getActionsText } from './test-utils/helpers';
 import renderWithBloko from './test-utils/render';
 import useBlokoStore from './useBlokoStore';
 
-beforeEach(() => {
-  globalState.clear();
-});
-
 const stateUser = 'user';
 const storeKey = 'auth';
+const lastName = 'lastName';
 const asyncAction = 'asyncAction';
-const setterUserName =
-  'set' + stateUser.charAt(0).toUpperCase() + stateUser.slice(1);
-const repository = jest.fn(v => v);
+const capitalizedUserName =
+  stateUser.charAt(0).toUpperCase() + stateUser.slice(1);
+
+const setterUserName = 'set' + capitalizedUserName;
+const resetUserName = 'reset' + capitalizedUserName;
+const request = jest.fn(v => v);
 const resolved = jest.fn(data => ({
   [stateUser]: {
     name: data.name,
+    lastName,
   },
 }));
 
 const User = Bloko.create({
   name: '',
+  lastName,
 });
 
 const Auth = Bloko.createStore({
@@ -31,18 +33,22 @@ const Auth = Bloko.createStore({
   state: {
     [stateUser]: {
       type: User,
-      setter: true,
+      setters: true,
     },
   },
   actions: {
     [asyncAction]: {
-      repository,
+      request,
       resolved,
     },
   },
 });
 
 const renderOptions = { blokos: [Auth] };
+
+beforeEach(() => {
+  globalState.clear();
+});
 
 describe('useBlokoStore', () => {
   it('should render correct interface for state and actions', () => {
@@ -62,6 +68,7 @@ describe('useBlokoStore', () => {
     const stateExpected = {
       user: {
         name: '',
+        lastName,
       },
       [asyncAction]: {
         loading: false,
@@ -71,6 +78,7 @@ describe('useBlokoStore', () => {
 
     const dispatchExpected = {
       [setterUserName]: jest.fn(),
+      [resetUserName]: jest.fn(),
       [asyncAction]: jest.fn(),
     };
 
@@ -88,7 +96,7 @@ describe('useBlokoStore', () => {
       },
       actions: {
         [asyncAction]: {
-          repository(v) {
+          request(v) {
             return Promise.resolve(v);
           },
           resolved(data) {
@@ -183,6 +191,7 @@ describe('useBlokoStore', () => {
       return (
         <React.Fragment>
           <span>{state[stateUser].name}</span>
+          <span>{state[stateUser].lastName}</span>
           <button onClick={onClick}>{buttonText}</button>
         </React.Fragment>
       );
@@ -190,10 +199,12 @@ describe('useBlokoStore', () => {
 
     const { getByText, queryByText } = renderWithBloko(<Tree />, renderOptions);
 
+    getByText(lastName);
     expect(queryByText(expectedModelName)).toBeNull();
 
     await userEvent.click(getByText(buttonText));
 
+    getByText(lastName);
     expect(queryByText(expectedModelName)).toBeInTheDocument();
   });
 
@@ -238,8 +249,8 @@ describe('useBlokoStore', () => {
       const element = await findByText(expectedUserName);
 
       expect(element).toBeInTheDocument();
-      expect(repository).toHaveBeenCalledTimes(1);
-      expect(repository).toHaveBeenCalledWith({ name: expectedUserName });
+      expect(request).toHaveBeenCalledTimes(1);
+      expect(request).toHaveBeenCalledWith({ name: expectedUserName });
     });
   });
 
