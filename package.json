@@ -1,6 +1,6 @@
 {
   "name": "@bloko/react",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "license": "MIT",
   "author": "Matheus Marques <marquesm91@gmail.com>",
   "main": "index.js",
