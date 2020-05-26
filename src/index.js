@@ -1,4 +1,4 @@
-import Bloko, { http } from '@bloko/js';
+import Bloko from '@bloko/js';
 import BlokoProvider from './BlokoProvider';
 import useBloko from './useBloko';
 import useBlokoStore from './useBlokoStore';
@@ -9,4 +9,4 @@ export default {
   Provider: BlokoProvider,
 };
 
-export { http, useBloko, useBlokoStore };
+export { useBloko, useBlokoStore };
