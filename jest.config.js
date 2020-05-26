@@ -23,6 +23,7 @@ module.exports = {
     '!src/**/index.js',
     '!src/utils/context.js',
     '!src/utils/isPromise.js',
+    '!src/utils/noop.js',
     '!src/test-utils/**',
     '!type/**/*.d.ts',
     '!**/node_modules/**',
