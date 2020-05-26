@@ -1,2 +1,9 @@
 import '@testing-library/jest-dom';
-import '@bloko/js/http-mock';
+
+/* eslint-disable no-global-assign */
+console = {
+  ...console,
+  warn: jest.fn(),
+  error: jest.fn(),
+};
+/* eslint-enable no-global-assign */
