@@ -13,7 +13,7 @@ export default [
       format: 'cjs',
       exports: 'named',
     },
-    external: ['react', 'axios', '@babel/runtime'],
+    external: ['react', '@babel/runtime'],
     plugins: [
       replace({
         delimiters: ['', ''],
@@ -21,6 +21,7 @@ export default [
           '@bloko/js': '@bloko/js/dist',
         },
       }),
+      replace({ 'process.env.NODE_ENV': JSON.stringify('development') }),
       resolve(),
       commonjs({
         exclude: 'src/**',
@@ -29,7 +30,6 @@ export default [
         exclude: 'node_modules/**',
         babelHelpers: 'runtime',
       }),
-      replace({ 'process.env.NODE_ENV': JSON.stringify('development') }),
       sizeSnapshot(),
     ],
   },
@@ -41,7 +41,7 @@ export default [
       exports: 'named',
       indent: false,
     },
-    external: ['react', 'axios', '@babel/runtime'],
+    external: ['react', '@babel/runtime'],
     plugins: [
       replace({
         delimiters: ['', ''],
@@ -49,6 +49,7 @@ export default [
           '@bloko/js': '@bloko/js/dist/index.min',
         },
       }),
+      replace({ 'process.env.NODE_ENV': JSON.stringify('production') }),
       resolve(),
       commonjs({
         exclude: 'src/**',
@@ -57,7 +58,6 @@ export default [
         exclude: 'node_modules/**',
         babelHelpers: 'runtime',
       }),
-      replace({ 'process.env.NODE_ENV': JSON.stringify('production') }),
       terser(),
       sizeSnapshot(),
     ],
