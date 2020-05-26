@@ -1,28 +1,29 @@
 import { useState } from 'react';
+import isFunction from './utils/isFunction';
+import recursiveUpdate from './utils/recursiveUpdate';
 
 function useBloko(Bloko) {
   const [bloko, setBloko] = useState(Bloko);
 
-  function update(updatedBloko) {
-    // create a new shallow clone for React reactivity
-    setBloko(shallowClone(updatedBloko));
+  function update(payload) {
+    // create a new copy to React reactivity
+    const copy = Object.assign({}, bloko);
+    const _payload = evaluate(payload, copy);
+
+    recursiveUpdate(_payload, copy);
+
+    setBloko(copy);
   }
 
   return [bloko, update];
 }
 
-function shallowClone(obj) {
-  var clone = Object.create(Object.getPrototypeOf(obj));
+function evaluate(value, state) {
+  if (isFunction(value)) {
+    return value(state);
+  }
 
-  var props = Object.getOwnPropertyNames(obj);
-
-  props.forEach(key => {
-    var desc = Object.getOwnPropertyDescriptor(obj, key);
-
-    Object.defineProperty(clone, key, desc);
-  });
-
-  return clone;
+  return value;
 }
 
 export default useBloko;
