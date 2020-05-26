@@ -42,7 +42,7 @@ const Store = Bloko.createStore({
   state: {
     user: {
       type: User,
-      setter: true,
+      setters: true,
     },
   },
   actions: {},
@@ -104,7 +104,7 @@ A [React hook](https://reactjs.org/hooks) that helps handle Bloko units.
 **Returns** a tuple of `[state, update]`:
 
 - `state` - Represents the current state of the Bloko Unit
-- `update(path: string, value: any)` - A function to ease updates on Bloko Unit using deep path string
+- `update(value: any)` - A function to ease updates on Bloko Unit using partial states, full states or new value instance.
 
 **Example**
 
@@ -125,10 +125,10 @@ function App() {
   const [parent, setParent] = useBloko(Parent);
   // => parent { name: '', child: { name: '' } }
 
-  setParent('name', 'Parent');
+  setParent({ name: 'Parent' });
   // => parent { name: 'Parent', child: { name: '' } }
 
-  setParent('child.name', 'Child');
+  setParent({ child: { name: 'Child' } });
   // => parent { name: 'Parent', child: { name: 'Child' } }
 }
 ```
@@ -161,13 +161,13 @@ const Store = Bloko.createStore({
   state: {
     user: {
       type: User,
-      setter: true,
+      setters: true,
     },
   },
   actions: {
-    getUserName: {
+    getUser: {
       // Simulate an async request with data.name
-      repository: () =>
+      request: () =>
         Promise.resolve({
           data: { name: 'John' },
         }),
@@ -185,7 +185,7 @@ const Store = Bloko.createStore({
 function App() {
   const [state, actions] = useBlokoStore(Store);
 
-  // => state { user: { name: '' }, getUserName: { loading: false, error: '' } }
-  // => actions { setUser(), getUserName() }
+  // => state { user: { name: '' }, getUser: { loading: false, error: '' } }
+  // => actions { setUser(), resetUser(), getUser() }
 }
 ```
