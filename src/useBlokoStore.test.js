@@ -14,7 +14,6 @@ const capitalizedUserName =
   stateUser.charAt(0).toUpperCase() + stateUser.slice(1);
 
 const setterUserName = 'set' + capitalizedUserName;
-const resetUserName = 'reset' + capitalizedUserName;
 const request = jest.fn(v => v);
 const resolved = jest.fn(data => ({
   [stateUser]: {
@@ -33,7 +32,7 @@ const Auth = Bloko.createStore({
   state: {
     [stateUser]: {
       type: User,
-      setters: true,
+      setter: true,
     },
   },
   actions: {
@@ -71,14 +70,13 @@ describe('useBlokoStore', () => {
         lastName,
       },
       [asyncAction]: {
-        loading: false,
+        loading: undefined,
         error: '',
       },
     };
 
     const dispatchExpected = {
       [setterUserName]: jest.fn(),
-      [resetUserName]: jest.fn(),
       [asyncAction]: jest.fn(),
     };
 
@@ -252,53 +250,5 @@ describe('useBlokoStore', () => {
       expect(request).toHaveBeenCalledTimes(1);
       expect(request).toHaveBeenCalledWith({ name: expectedUserName });
     });
-  });
-
-  it('should not update state when has mismatch types', async () => {
-    const expectedModelName = 'expectedFooName';
-    const buttonUndefined = 'SubmitUndefined';
-    const buttonString = 'SubmitString';
-    const buttonFunctionString = 'SubmitFunctionString';
-
-    function Tree() {
-      const [state, actions] = useBlokoStore(Auth);
-
-      function onClickUndefined() {
-        // trying to update partial object state with undefined value. Reset to initial state
-        actions[setterUserName]();
-      }
-
-      function onClickString() {
-        // trying to update partial object state with primitive string
-        actions[setterUserName](expectedModelName);
-      }
-
-      function onClickFunctionString() {
-        // trying to update partial object state with function
-        // which resolves to primitive string
-        actions[setterUserName](() => expectedModelName);
-      }
-
-      return (
-        <React.Fragment>
-          <span>{state[stateUser].name}</span>
-          <button onClick={onClickUndefined}>{buttonUndefined}</button>
-          <button onClick={onClickString}>{buttonString}</button>
-          <button onClick={onClickFunctionString}>
-            {buttonFunctionString}
-          </button>
-        </React.Fragment>
-      );
-    }
-
-    const { getByText, queryByText } = renderWithBloko(<Tree />, renderOptions);
-
-    expect(queryByText(expectedModelName)).toBeNull();
-
-    userEvent.click(getByText(buttonUndefined));
-    userEvent.click(getByText(buttonString));
-    userEvent.click(getByText(buttonFunctionString));
-
-    expect(queryByText(expectedModelName)).toBeNull();
   });
 });
