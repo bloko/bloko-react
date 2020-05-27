@@ -1,7 +1,7 @@
 import { useState } from 'react';
+import { merge } from '@bloko/js';
 import isFunction from './utils/isFunction';
 import isObject from './utils/isObject';
-import recursiveUpdate from './utils/recursiveUpdate';
 
 function useBloko(Bloko) {
   const { instance, initial } = getConfig(Bloko);
@@ -25,7 +25,7 @@ function useBloko(Bloko) {
 
       const _payload = evaluate(payload, nextState);
 
-      recursiveUpdate(_payload, nextState);
+      merge(nextState, _payload);
     }
 
     setBloko(nextState);
