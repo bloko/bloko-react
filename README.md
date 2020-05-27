@@ -42,7 +42,7 @@ const Store = Bloko.createStore({
   state: {
     user: {
       type: User,
-      setters: true,
+      setter: true,
     },
   },
   actions: {},
@@ -179,7 +179,7 @@ const Store = Bloko.createStore({
   state: {
     user: {
       type: User,
-      setters: true,
+      setter: true,
     },
   },
   actions: {
@@ -203,7 +203,7 @@ const Store = Bloko.createStore({
 function App() {
   const [state, actions] = useBlokoStore(Store);
 
-  // => state { user: { name: '' }, getUser: { loading: false, error: '' } }
-  // => actions { setUser(), resetUser(), getUser() }
+  // => state { user: { name: '' }, getUser: { loading: undefined, error: '' } }
+  // => actions { setUser(), getUser() }
 }
 ```
