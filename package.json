@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.9.6",
-    "@bloko/js": "0.0.9"
+    "@bloko/js": "0.0.10"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
