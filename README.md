@@ -123,13 +123,31 @@ const Parent = Bloko.create({
 
 function App() {
   const [parent, setParent] = useBloko(Parent);
-  // => parent { name: '', child: { name: '' } }
+  // => null
+
+  // You could be more explicit using initial: false
+  const [parent, setParent] = useBloko({ type: Parent, initial: false });
+  // => null
+
+  // Use initial: true to start with an object with default values
+  const [parent, setParent] = useBloko({ type: Parent, initial: true });
+  // => { name: '', child: { name: '' } }
 
   setParent({ name: 'Parent' });
-  // => parent { name: 'Parent', child: { name: '' } }
+  // => { name: 'Parent', child: { name: '' } }
 
+  // Partial states are allowed
   setParent({ child: { name: 'Child' } });
-  // => parent { name: 'Parent', child: { name: 'Child' } }
+  // => { name: 'Parent', child: { name: 'Child' } }
+
+  setParent(null);
+  // => null
+
+  // When updates coming through null state
+  // Bloko instance will be called again
+  // and set result with default values
+  setParent({ name: 'Parent' });
+  // => { name: 'Parent', child: { name: '' } }
 }
 ```
 
