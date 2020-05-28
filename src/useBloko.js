@@ -17,18 +17,20 @@ function useBloko(Bloko) {
   });
 
   function update(payload) {
-    let nextState = null;
+    setBloko(prev => {
+      let nextState = null;
 
-    if (payload) {
-      // create a new copy to React reactivity
-      nextState = Object.assign({}, bloko || instance());
+      if (payload) {
+        // create a new copy to React reactivity
+        nextState = Object.assign({}, prev || instance());
 
-      const _payload = evaluate(payload, nextState);
+        const _payload = evaluate(payload, nextState);
 
-      merge(nextState, _payload);
-    }
+        merge(nextState, _payload);
+      }
 
-    setBloko(nextState);
+      return nextState;
+    });
   }
 
   // Necessary to safely use inside useEffects
