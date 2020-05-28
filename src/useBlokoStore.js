@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { globalState } from '@bloko/js';
 import useBlokoContext from './useBlokoContext';
 import identity from './utils/identity';
@@ -20,7 +21,10 @@ function useActions(actions, context) {
     return acc;
   }, {});
 
-  return _actions;
+  // Necessary to safely use inside useEffects
+  const memoActions = useMemo(() => _actions, []);
+
+  return memoActions;
 }
 
 function useBloko(bloko) {
