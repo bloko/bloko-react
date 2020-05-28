@@ -27,6 +27,12 @@ Bloko is currently under heavy development, but can be installed by running:
 npm install --save @bloko/react
 ```
 
+## Try it
+
+Try Bloko with this CodeSandbox on a Todo List App
+
+[![Edit bloko-todo-list](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/bloko-todo-list-6b4mt?fontsize=14&hidenavigation=1&theme=dark)
+
 ## Quick example
 
 ```js
