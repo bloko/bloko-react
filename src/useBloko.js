@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { merge } from '@bloko/js';
 import isFunction from './utils/isFunction';
 import isObject from './utils/isObject';
@@ -31,7 +31,10 @@ function useBloko(Bloko) {
     setBloko(nextState);
   }
 
-  return [bloko, update];
+  // Necessary to safely use inside useEffects
+  const _update = useCallback(update, []);
+
+  return [bloko, _update];
 }
 
 function evaluate(value, state) {
